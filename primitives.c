@@ -1,8 +1,10 @@
 #include "primitives.h"
 
 #include <stdio.h>
+#include <stdbool.h>
+#include <math.h>
 
-#define PRIM_SWAP(a, b, T) do { T SWAP = a; a = b; b = SWAP; } while (0)
+#define PRIM_SWAP(a, b, T) { T SWAP = a; a = b; b = SWAP; }
 
 void prim_fill(uint *canvas, size_t width, size_t height, uint color) {
     for (size_t i = 0; i < width*height; i++) {
@@ -28,43 +30,59 @@ void prim_draw_rect(uint *canvas, size_t width, size_t height, size_t x1, size_t
     }
 }
 
-void prim_draw_line(uint *canvas, size_t width, size_t height, size_t x1, size_t y1, size_t x2, size_t y2,
+void prim_draw_line(uint *canvas, size_t width, size_t height, int x1, int y1, int x2, int y2,
     uint color) {
-    if (x1 > x2) PRIM_SWAP(x1, x2, size_t);
-    if (y1 > y2) PRIM_SWAP(y1, y2, size_t);
+    bool up = false;
+    int dx = abs(x2 - x1);
+    int dy = abs(y2 - y1);
+    float error = 0;
 
-    size_t dx = x2 - x1;
-    size_t dy = y2 - y1;
-    float error = 0.5;
+    if (x1 > x2) PRIM_SWAP(x1, x2, int);
+    if (y1 > y2) up = true;
 
     if (dx >= dy) {
-	float m = (float)dy / dx;
-	size_t y = y1;
+	float m = fabsf((float)dy / dx);
+	int y = y1;
 
-	for (size_t x = x1; x < x2; x++) {
-	    if (y < height && x < width) {
+	for (int x = x1; x < x2; x++) {
+	    if (y < (int)height && x < (int)width) {
 		canvas[y * width + x] = color;
 	    }
 
 	    error += m;
 	    if (error >= 0.5) {
-		y++;
+		if (up) y--;
+		if (!up) y++;
 		error -= 1;
 	    }
 	}
     } else {
 	float m = (float)dx / dy;
-	size_t x = x1;
+	int x = x1;
 
-	for (size_t y = y1; y < y2; y++) {
-	    if (y < height && x < width) {
-		canvas[y * width + x] = color;
+	if (up) {
+	    for (int y = y1; y > y2; y--) {
+		if (y < (int)height && x < (int)width) {
+		    canvas[y * width + x] = color;
+		}
+
+		error += m;
+		if (error >= 0.5) {
+		    x++;
+		    error -= 1;
+		}
 	    }
+	} else {
+	    for (int y = y1; y < y2; y++) {
+		if (y < (int)height && x < (int)width) {
+		    canvas[y * width + x] = color;
+		}
 
-	    error += m;
-	    if (error >= 0.5) {
-		x++;
-		error -= 1;
+		error += m;
+		if (error >= 0.5) {
+		    x++;
+		    error -= 1;
+		}
 	    }
 	}
     }
