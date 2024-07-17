@@ -12,7 +12,7 @@ void prim_fill(uint *canvas, size_t width, size_t height, uint color) {
     }
 }
 
-void prim_draw_rect(uint *canvas, size_t width, size_t height, size_t x1, size_t y1, size_t x2, size_t y2, 
+void prim_fill_rect(uint *canvas, size_t width, size_t height, size_t x1, size_t y1, size_t x2, size_t y2, 
     uint color) {
     if (x1 > x2) PRIM_SWAP(x1, x2, size_t);
     if (y1 > y2) PRIM_SWAP(y1, y2, size_t);
@@ -21,10 +21,29 @@ void prim_draw_rect(uint *canvas, size_t width, size_t height, size_t x1, size_t
 	if (dy < height) {
 	    for (size_t dx = x1; dx < x2; dx++) {
 		if (dx < width) {
-		    int x = dx;
-		    int y = dy;
-		    canvas[y * width + x] = color;
+		    canvas[dy * width + dx] = color;
 		}
+	    }
+	}
+    }
+}
+
+void prim_draw_rect(uint *canvas, size_t width, size_t height, int x1, int y1, int x2, int y2,
+    uint color) {
+    if (x1 > x2) PRIM_SWAP(x1, x2, int);
+    if (y1 > y2) PRIM_SWAP(y1, y2, int);
+
+    for (int dy = y1; dy < y2; dy++) {
+	if (dy < (int)height) {
+	    if (dy == y1 || dy == y2 - 1) {
+		for (int dx = x1; dx <= x2; dx++) {
+		    if (dx < (int)width) {
+			canvas[dy * width + dx] = color;
+		    }
+		}
+	    } else {
+		canvas[dy * width + x1] = color;
+		canvas[dy * width + x2] = color;
 	    }
 	}
     }
