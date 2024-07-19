@@ -1,4 +1,5 @@
 #include "primitives.h"
+#include "obj_drawer.h"
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -104,6 +105,20 @@ void prim_draw_line(uint *canvas, size_t width, size_t height, int x1, int y1, i
 		}
 	    }
 	}
+    }
+}
+
+void prim_draw_obj(FILE *f) {
+    Vert **verts = load_verts_from_obj_file(f);
+    char *line = read_file_line(f);
+
+    while (line != NULL) {
+	if (line[0] == 'f') {
+	    int **parsed_faces = parse_line_to_int(line);
+	}
+
+	free(line);
+	line = read_file_line(f);
     }
 }
 

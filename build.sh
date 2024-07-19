@@ -1,1 +1,1 @@
-gcc -Wextra -Wall -o example example.c primitives.c && ./example
+gcc -Wextra -Wall -o example example.c primitives.c obj_drawer.c && ./example
