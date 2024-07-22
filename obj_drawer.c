@@ -38,7 +38,7 @@ int** parse_line_to_int(char *line) {
 	strncpy(c_buffer, line + index_buffer, int_size);
 	c_buffer[int_size] = '\0';
 
-	parsed_ints[int_index] = malloc(sizeof(atoi(c_buffer)));
+	parsed_ints[int_index] = malloc(sizeof(int) * int_size);
 	*parsed_ints[int_index] = atoi(c_buffer);
 
 	index_buffer = ++i;
@@ -49,9 +49,9 @@ int** parse_line_to_int(char *line) {
     return parsed_ints;
 }
 
-void free_parsed_verts(int **parsed_verts) {
+void free_parsed_int(int **parsed_int) {
     for (int i = 0; i < 3; i++) {
-	free(parsed_verts[i]);
+	free(parsed_int[i]);
     }
 }
 
@@ -72,7 +72,7 @@ Vert** load_verts_from_obj_file(FILE *f) {
 	    verts = realloc(verts, sizeof(Vert*) * ++verts_counter);
 	    verts[verts_counter - 1] = v;
 
-	    free_parsed_verts(parsed_verts);
+	    free_parsed_int(parsed_verts);
 	}
 
 	free(line);

@@ -115,6 +115,8 @@ void prim_draw_obj(FILE *f) {
     while (line != NULL) {
 	if (line[0] == 'f') {
 	    int **parsed_faces = parse_line_to_int(line);
+
+	    free_parsed_int(parsed_faces);
 	}
 
 	free(line);
